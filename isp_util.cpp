@@ -635,14 +635,8 @@ void packed_7x7_data(Word16u* in_data, int width, int height, int index, Word16u
 	row = index / width;
 
 	
+	int idx[49];
 
-	int idx0, idx1, idx2, idx3, idx4, idx5, idx6, 
-		idx7, idx8, idx9, idx10, idx11, idx12, idx13,
-		idx14, idx15, idx16, idx17, idx18, idx19, idx20,
-		idx21, idx22, idx23, idx24, idx25, idx26, idx27, 
-		idx28, idx29, idx30, idx31, idx32, idx33, idx34, 
-		idx35, idx36, idx37, idx38, idx39, idx40, idx41, 
-		idx42, idx43, idx44, idx45, idx46, idx47, idx48;
 
 
 	int h0_offset, h1_offset, h2_offset;
@@ -651,7 +645,7 @@ void packed_7x7_data(Word16u* in_data, int width, int height, int index, Word16u
 	int b4_offset, b5_offset, b6_offset;
 
 
-	idx24 = index;
+	idx[24] = index;
 	h0_offset = 0 - (3 * width);
 	h1_offset = 0 - (2*width);
 	h2_offset = 0 - width;
@@ -721,6 +715,203 @@ void packed_7x7_data(Word16u* in_data, int width, int height, int index, Word16u
 		r6_offset = r5_offset = r4_offset = 0;
 	}
 
+	idx[0] = idx[24] + h0_offset + l0_offset;
+	idx[1] = idx[24] + h0_offset + l1_offset;
+	idx[2] = idx[24] + h0_offset + l2_offset;
+	idx[3] = idx[24] + h0_offset;
+	idx[4] = idx[24] + h0_offset + r4_offset;
+	idx[5] = idx[24] + h0_offset + r5_offset;
+	idx[6] = idx[24] + h0_offset + r6_offset;
+			
+	idx[7] = idx[24] + h1_offset + l0_offset;
+	idx[8] = idx[24] + h1_offset + l1_offset;
+	idx[9] = idx[24] + h1_offset + l2_offset;
+	idx[10] = idx[24] + h1_offset;
+	idx[11] = idx[24] + h1_offset + r4_offset;
+	idx[12] = idx[24] + h1_offset + r5_offset;
+	idx[13] = idx[24] + h1_offset + r6_offset;
+			
+	idx[14] = idx[24] + h2_offset + l0_offset;
+	idx[15] = idx[24] + h2_offset + l1_offset;
+	idx[16] = idx[24] + h2_offset + l2_offset;
+	idx[17] = idx[24] + h2_offset;
+	idx[18] = idx[24] + h2_offset + r4_offset;
+	idx[19] = idx[24] + h2_offset + r5_offset;
+	idx[20] = idx[24] + h2_offset + r6_offset;
+		   		
+	idx[21] = idx[24]  + l0_offset;
+	idx[22] = idx[24]  + l1_offset;
+	idx[23] = idx[24]  + l2_offset;
+	idx[24] = idx[24];
+	idx[25] = idx[24]  + r4_offset;
+	idx[26] = idx[24]  + r5_offset;
+	idx[27] = idx[24]  + r6_offset;
+		  	
+	idx[28] = idx[24] + b4_offset + l0_offset;
+	idx[29] = idx[24] + b4_offset + l1_offset;
+	idx[30] = idx[24] + b4_offset + l2_offset;
+	idx[31] = idx[24] + b4_offset;
+	idx[32] = idx[24] + b4_offset + r4_offset;
+	idx[33] = idx[24] + b4_offset + r5_offset;
+	idx[34] = idx[24] + b4_offset + r6_offset;
+		   		
+	idx[35] = idx[24] + b5_offset + l0_offset;
+	idx[36] = idx[24] + b5_offset + l1_offset;
+	idx[37] = idx[24] + b5_offset + l2_offset;
+	idx[38] = idx[24] + b5_offset;
+	idx[39] = idx[24] + b5_offset + r4_offset;
+	idx[40] = idx[24] + b5_offset + r5_offset;
+	idx[41] = idx[24] + b5_offset + r6_offset;
+			   
+	idx[42] = idx[24] + b6_offset + l0_offset;
+	idx[43] = idx[24] + b6_offset + l1_offset;
+	idx[44] = idx[24] + b6_offset + l2_offset;
+	idx[45] = idx[24] + b6_offset;
+	idx[46] = idx[24] + b6_offset + r4_offset;
+	idx[47] = idx[24] + b6_offset + r5_offset;
+	idx[48] = idx[24] + b6_offset + r6_offset;
+
+	for (int i = 0; i < 49; i++)
+	{
+		out_data[i] = in_data[idx[i]];
+	}
+	
+
+
+	/*
+		if (row==3494&&col==4655)
+		{
+			for (int m = 0; m < 49; m++)
+			{
+				printf("%d\t", idx[m]);
+				if ((m + 1) % 7 == 0)
+				{
+					printf("\n");
+				}
+			}
+		}
+	*/	
+}
+
+
+
+
+/*
+
+//H V must be odd
+void packed_HxV_data(Word16u* in_data, Word16u* index_offset_h, Word16u* index_offset_v, int width, int height, int index, int size_h, int size_v, Word16u* out_data)
+{
+	///LOGE("DEMOSAIC:WIDTH = %d,HEIGHT= %d,BAYER_PATTERN=%d", width, height, bayer_pattern);
+	int i, j;
+	//int data[3][3];
+	int col, row;
+	col = index % width;
+	row = index / width;
+	int copy_h ;
+	int copy_b ;
+	int copy_l ;
+	int copy_r ;
+	copy_h = size_v / 2 - row;
+	copy_b = size_v / 2 + row - height - 1;
+	copy_l = size_h / 2 - col;
+	copy_r = size_h / 2 + col - width - 1;
+	copy_h = copy_h < 0 ? 0 : copy_h;
+	copy_b = copy_b < 0 ? 0 : copy_b;
+	copy_l = copy_l < 0 ? 0 : copy_l;
+	copy_r = copy_r < 0 ? 0 : copy_r;
+
+	for (int i = 0; i < size_h; i++)
+	{
+		if (i < copy_l)
+			index_offset_h[i] = 0;
+		else
+			index_offset_h[i] = i-copy_l;
+	}
+	int idx0, idx1, idx2, idx3, idx4, idx5, idx6,
+		idx7, idx8, idx9, idx10, idx11, idx12, idx13,
+		idx14, idx15, idx16, idx17, idx18, idx19, idx20,
+		idx21, idx22, idx23, idx24, idx25, idx26, idx27,
+		idx28, idx29, idx30, idx31, idx32, idx33, idx34,
+		idx35, idx36, idx37, idx38, idx39, idx40, idx41,
+		idx42, idx43, idx44, idx45, idx46, idx47, idx48;
+
+
+	int h0_offset, h1_offset, h2_offset;
+	int l0_offset, l1_offset, l2_offset;
+	int r4_offset, r5_offset, r6_offset;
+	int b4_offset, b5_offset, b6_offset;
+
+
+	idx24 = index;
+	h0_offset = 0 - (3 * width);
+	h1_offset = 0 - (2 * width);
+	h2_offset = 0 - width;
+	b4_offset = width;
+	b5_offset = 2 * width;
+	b6_offset = 3 * width;
+
+
+	l0_offset = -3;
+	l1_offset = -2;
+	l2_offset = -1;
+	r4_offset = 1;
+	r5_offset = 2;
+	r6_offset = 3;
+
+
+
+	if (row == 0)
+	{
+		h0_offset = h1_offset = h2_offset = 0;
+	}
+	else if (row == 1)
+	{
+		h0_offset = h1_offset = h2_offset;
+	}
+	else if (row == 2)
+	{
+		h0_offset = h1_offset;;
+	}
+	else if (row == (height - 3))
+	{
+		b6_offset = b5_offset;
+	}
+	else if (row == (height - 2))
+	{
+		b6_offset = b5_offset = b4_offset;
+	}
+	else if (row == (height - 1))
+	{
+		b6_offset = b5_offset = b4_offset = 0;
+	}
+
+	if (col == 0)
+	{
+		l0_offset = l1_offset = l2_offset = 0;
+	}
+	else if (col == 1)
+	{
+		l0_offset = l1_offset = l2_offset;
+	}
+	else if (col == 2)
+	{
+		l0_offset = l1_offset;
+	}
+	else if (col == (width - 3))
+	{
+		r6_offset = r5_offset;
+
+	}
+	else if (col == (width - 2))
+	{
+		r6_offset = r5_offset = r4_offset;
+
+	}
+	else if (col == (width - 1))
+	{
+		r6_offset = r5_offset = r4_offset = 0;
+	}
+
 	idx0 = idx24 + h0_offset + l0_offset;
 	idx1 = idx24 + h0_offset + l1_offset;
 	idx2 = idx24 + h0_offset + l2_offset;
@@ -744,15 +935,15 @@ void packed_7x7_data(Word16u* in_data, int width, int height, int index, Word16u
 	idx18 = idx24 + h2_offset + r4_offset;
 	idx19 = idx24 + h2_offset + r5_offset;
 	idx20 = idx24 + h2_offset + r6_offset;
-			   
-	idx21 = idx24  + l0_offset;
-	idx22 = idx24  + l1_offset;
-	idx23 = idx24  + l2_offset;
+
+	idx21 = idx24 + l0_offset;
+	idx22 = idx24 + l1_offset;
+	idx23 = idx24 + l2_offset;
 	idx24 = idx24;
-	idx25 = idx24  + r4_offset;
-	idx26 = idx24  + r5_offset;
-	idx27 = idx24  + r6_offset;
-			   
+	idx25 = idx24 + r4_offset;
+	idx26 = idx24 + r5_offset;
+	idx27 = idx24 + r6_offset;
+
 	idx28 = idx24 + b4_offset + l0_offset;
 	idx29 = idx24 + b4_offset + l1_offset;
 	idx30 = idx24 + b4_offset + l2_offset;
@@ -760,7 +951,7 @@ void packed_7x7_data(Word16u* in_data, int width, int height, int index, Word16u
 	idx32 = idx24 + b4_offset + r4_offset;
 	idx33 = idx24 + b4_offset + r5_offset;
 	idx34 = idx24 + b4_offset + r6_offset;
-			   
+
 	idx35 = idx24 + b5_offset + l0_offset;
 	idx36 = idx24 + b5_offset + l1_offset;
 	idx37 = idx24 + b5_offset + l2_offset;
@@ -768,7 +959,7 @@ void packed_7x7_data(Word16u* in_data, int width, int height, int index, Word16u
 	idx39 = idx24 + b5_offset + r4_offset;
 	idx40 = idx24 + b5_offset + r5_offset;
 	idx41 = idx24 + b5_offset + r6_offset;
-			   
+
 	idx42 = idx24 + b6_offset + l0_offset;
 	idx43 = idx24 + b6_offset + l1_offset;
 	idx44 = idx24 + b6_offset + l2_offset;
@@ -854,14 +1045,7 @@ void packed_7x7_data(Word16u* in_data, int width, int height, int index, Word16u
 
 
 
-
-
-
-
-
-
-
-
+*/
 
 
 

@@ -337,15 +337,15 @@ int main(int argc, char* argv[])
 
 
 		Wb_param_in.r_gain = awb_param_out.r_gain;
-		Wb_param_in.r_gain = awb_param_out.r_gain;
-		Wb_param_in.r_gain = awb_param_out.r_gain;
+		Wb_param_in.g_gain = awb_param_out.g_gain;
+		Wb_param_in.b_gain = awb_param_out.b_gain;
 		demosaic_param_in.r_gain = awb_param_out.r_gain;
-		demosaic_param_in.r_gain = awb_param_out.r_gain;
-		demosaic_param_in.r_gain = awb_param_out.r_gain;
+		demosaic_param_in.g_gain = awb_param_out.g_gain;
+		demosaic_param_in.b_gain = awb_param_out.b_gain;
 
 		demosaic(pBuffer_blc, pRBuffer, pGBuffer, pBBuffer, ImWidth, ImHeight, 0, &demosaic_param_in, &cp);
 		//cc(pRBuffer, pGBuffer, pBBuffer,pRBuffer, pGBuffer, pBBuffer, ImWidth, ImHeight, &cc_param_in, &cp);
-		////////////wb(pRBuffer, pGBuffer, pBBuffer, &Wb_param_in, ImWidth, ImHeight);
+		wb(pRBuffer, pGBuffer, pBBuffer, &Wb_param_in, ImWidth, ImHeight);
 
 
 		gamma_correction(pRBuffer, pRBuffer_8, ImWidth, ImHeight, &gamma_param_in);
@@ -482,8 +482,44 @@ int main(int argc, char* argv[])
 		yuv422.close();
 
 		
+		cstYUV2RGB(pYBuffer, pUBuffer, pVBuffer, pRBuffer_8, pGBuffer_8, pBBuffer_8,  ImWidth, ImHeight, &cst_param_in, &cp);
+		FILE* fp1;
+
+		char bmp_path1[300];
+
+		sprintf_s(bmp_path1, 200, "%s%s", temp_dir2.c_str(), "_final.bmp");
+		std::cout << "//...........debug_final raw path............//" << endl;
+		std::cout << bmp_path1 << endl;
 	
-	
+		if (err = fopen_s(&fp1, bmp_path1, "wb"))
+		{
+			LOGE("BMP file read error\n");
+		}
+
+
+		//fwrite(&bfh, 8, 1, fp);//由于linux上4字节对齐，而信息头大小为54字节，第一部分14字节，第二部分40字节，所以会将第一部分补齐为16自己，直接用sizeof，打开图片时就会遇到premature end-of-file encountered错误
+		fwrite(&bfh.bfType, sizeof(bfh.bfType), 1, fp1);
+		fwrite(&bfh.bfSize, sizeof(bfh.bfSize), 1, fp1);
+		fwrite(&bfh.bfReserved1, sizeof(bfh.bfReserved1), 1, fp1);
+		fwrite(&bfh.bfReserved2, sizeof(bfh.bfReserved2), 1, fp1);
+		fwrite(&bfh.bfOffBits, sizeof(bfh.bfOffBits), 1, fp1);
+		fwrite(&bih, sizeof(BMPINFOHEADER_T), 1, fp1);
+
+		char* data2_temp = (char*)calloc(1,sizeof(char));
+		for (int i = 0; i < 3 * ImWidth * ImHeight; i++)
+		{
+			if (i % 3 == 0)
+				*data2_temp = *(pBBuffer_8 + i / 3);
+			else if (i % 3 == 1)
+				*data2_temp = *(pGBuffer_8 + i / 3);
+			else if (i % 3 == 2)
+				*data2_temp = *(pRBuffer_8 + i / 3);
+			//*data1_temp = 32;
+			if (fwrite(data2_temp, sizeof(char), 1, fp1) != 1)
+				LOGE("Final BMP file write error\n");
+
+		}
+		fclose(fp1);
 	
 	}//for end
 	free(pBuffer);

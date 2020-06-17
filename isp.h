@@ -14,6 +14,7 @@
 #include<algorithm>
 
 #include"isp_util.h"
+
 #include"isp_type.h"
 #include"demosaic.h"
 #include"blc.h"
@@ -27,6 +28,7 @@
 #include "cc.h"
 #include "nr.h"
 #include "wb.h"
+using namespace std;
 typedef struct {
 	Word16_u    bfType;
 	unsigned int   bfSize;
@@ -66,6 +68,6 @@ typedef struct {
 #define FOR3 for(int i=0;i<3;i++)
 #define MAX(a,b) a>b?a:b
 #define MIN(a,b) a<b?a:b
-#define ABS(X) X<0?0:X
+#define ABS(x) (x)<0?(-x):(x)
 
 #define PI 3.1416f

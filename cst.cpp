@@ -1,5 +1,5 @@
 #include"cst.h"
-int cst(Word8u* r_in, Word8u* g_in, Word8u* b_in,
+void cst(Word8u* r_in, Word8u* g_in, Word8u* b_in,
 	Word8u* y_out, Word8u* u_out, Word8u* v_out, int width, int height, Cst_Cfg* param_in, module_cp* cp)
 {
 	LOGE("CST:WIDTH = %d,HEIGHT= %d",width,height);
@@ -33,6 +33,46 @@ int cst(Word8u* r_in, Word8u* g_in, Word8u* b_in,
 
 
 	}
-	return 0;
+
 	
 }
+void cstYUV2RGB(Word8u* y_in, Word8u* u_in, Word8u* v_in, Word8u* r_out, Word8u* g_out,Word8u* b_out,
+	 int width, int height, Cst_Cfg* param_in, module_cp* cp)
+{
+	LOGE("CSTYUV2RGB:WIDTH = %d,HEIGHT= %d", width, height);
+	int i;
+	int r_temp, g_temp, b_temp;
+
+	for (i = 0; i < width * height; i++)
+	{
+		r_temp = (298 * y_in[i] + 409 * v_in[i]) / 256 - 223;
+		g_temp = (298 * y_in[i] - 100 * u_in[i] - 211 * v_in[i]) / 256 + 136;
+		b_temp = (298 * y_in[i] + 516 * u_in[i]) / 256 - 277;
+
+		if (r_temp < 0)
+			r_temp = 0;
+		else if (r_temp > 255)
+			r_temp = 255;
+		
+		if (g_temp < 0)
+			g_temp = 0;
+		else if (g_temp > 255)
+			g_temp = 255;
+
+		if (b_temp < 0)
+			b_temp = 0;
+		else if (b_temp > 255)
+			b_temp = 255;
+
+
+		r_out[i] = r_temp;
+		g_out[i] = g_temp;
+		b_out[i] = b_temp;
+
+
+
+	}
+
+
+}
+

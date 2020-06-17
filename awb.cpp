@@ -73,7 +73,7 @@ int YCbCr2RGB(Word16u* Y_in, Word16u* Cb_in, Word16u* Cr_in, Word16u* r_out, Wor
 	}
 	return 0;
 }
-int awb_RGB(Word8u* r_in, Word8u* g_in, Word8u* b_in, int width, int height);
+
 int awb_RGB(Word8u* r_in, Word8u* g_in, Word8u* b_in, int width, int height)
 {
 	LOGE("AWB:WIDTH = %d,HEIGHT= %d", width, height);
@@ -162,7 +162,7 @@ int awb(Word16u* image, Awb_out* param_out, int width, int height)
 	Word16u* pBBuffer = (Word16u*)(malloc(BbufferSize * sizeof(Word16u)));
 	memset(pRBuffer, 0, RbufferSize * sizeof(Word16u));
 	memset(pGrBuffer, 0, GbbufferSize * sizeof(Word16u));
-	memset(pGrBuffer, 0, GrbufferSize * sizeof(Word16u));
+	memset(pGbBuffer, 0, GrbufferSize * sizeof(Word16u));
 	memset(pGBuffer, 0, GbufferSize * sizeof(Word16u));
 	memset(pBBuffer, 0, BbufferSize * sizeof(Word16u));
 
@@ -206,7 +206,7 @@ int awb(Word16u* image, Awb_out* param_out, int width, int height)
 	LOGE("awb threshold = %d", Threshold);
 	Word32u Average_R = 0;
 	Word32u Average_G = 0;
-	Word32u Average_B = 0;;
+	Word32u Average_B = 0;
 	Word32u Amount = 1;
 	for (int i = 0; i < width * height/4; i++)
 	{
@@ -235,20 +235,25 @@ int awb(Word16u* image, Awb_out* param_out, int width, int height)
 	ratio_G = 1000;
 	ratio_B = ratio_B < ratio_G ? 1000 : ratio_B * 1000 / ratio_G;
 	LOGE("ratio_R=%d ratio_G=%d ratio_B=%d", ratio_R, ratio_G, ratio_B);
+	/*
 	for (int i = 0; i < width * height/4; i++)
 	{
 		pRBuffer[i] = (pRBuffer[i] * ratio_R) / 1000 > 1023 ? 1023 : (pRBuffer[i] * ratio_R) / 1000;
 		pGBuffer[i] = (pGBuffer[i] * ratio_G) / 1000 > 1023 ? 1023 : (pGBuffer[i] * ratio_G) / 1000;;
 		pBBuffer[i] = (pBBuffer[i] * ratio_B) / 1000 > 1023 ? 1023 : (pBBuffer[i] * ratio_B) / 1000;;
 	}
-
+	*/
 	param_out->r_gain = float(ratio_R) / 1000.0f;
 	param_out->g_gain = float(ratio_G) / 1000.0f;
 	param_out->b_gain = float(ratio_B) / 1000.0f;
 	LOGE("r_ratio = %f,g_ratio = %f,b_ratio = %f", param_out->r_gain, param_out->g_gain, param_out->b_gain);
 //	combo_pixel(pRBuffer, pGrBuffer, pGbBuffer, pBBuffer, image, width, height, bayer_pattern);
-
-
+	free(pRBuffer);
+	free(pGrBuffer);
+	free(pGbBuffer);
+	free(pGBuffer);
+	free(pBBuffer);
+	free(Hist_Y);
 	free(Y);
 	return 0;
 }
