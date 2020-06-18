@@ -1,13 +1,6 @@
 #include"sharpen.h"
 
-int plot3x3(Word8u* in_3x3,float* coeff_3x3)
-{
-	float temp1, temp2, temp3;
-	temp1 = in_3x3[0] * coeff_3x3[0] + in_3x3[1] * coeff_3x3[1] + in_3x3[2] * coeff_3x3[2];
-	temp2 = in_3x3[3] * coeff_3x3[3] + in_3x3[4] * coeff_3x3[4] + in_3x3[5] * coeff_3x3[5];
-	temp3 = in_3x3[6] * coeff_3x3[6] + in_3x3[7] * coeff_3x3[7] + in_3x3[8] * coeff_3x3[8];
-	return (int)(temp1 + temp2 + temp3);
-}
+
 
 
 void sort(int a, int b, int c,int max,int middle,int min)
@@ -58,24 +51,7 @@ void sort(int a, int b, int c,int max,int middle,int min)
 
 
 
-int plot5x5(Word8u* in_5x5, float* coeff_5x5)
-{
-	float temp1, temp2, temp3, temp4, temp5;
-	temp1 = in_5x5[0] * coeff_5x5[0] + in_5x5[1] * coeff_5x5[1] + in_5x5[2] * coeff_5x5[2] + in_5x5[3] * coeff_5x5[3] + in_5x5[4] * coeff_5x5[4];
-	temp2 = in_5x5[5] * coeff_5x5[5] + in_5x5[6] * coeff_5x5[6] + in_5x5[7] * coeff_5x5[7] + in_5x5[8] * coeff_5x5[8] + in_5x5[9] * coeff_5x5[9];
-	temp3 = in_5x5[10] * coeff_5x5[10] + in_5x5[11] * coeff_5x5[11] + in_5x5[12] * coeff_5x5[12] + in_5x5[13] * coeff_5x5[13] + in_5x5[14] * coeff_5x5[14];
-	temp4 = in_5x5[15] * coeff_5x5[15] + in_5x5[16] * coeff_5x5[16] + in_5x5[17] * coeff_5x5[17] + in_5x5[18] * coeff_5x5[18] + in_5x5[19] * coeff_5x5[19];
-	temp5 = in_5x5[20] * coeff_5x5[20] + in_5x5[21] * coeff_5x5[21] + in_5x5[22] * coeff_5x5[22] + in_5x5[23] * coeff_5x5[23] + in_5x5[24] * coeff_5x5[24];
-	
-//	LOGE("%d,%d,%d,%d,%d", in_5x5[0] , in_5x5[1] , in_5x5[2] , in_5x5[3] , in_5x5[4]);
-//	LOGE("%d,%d,%d,%d,%d", in_5x5[5], in_5x5[6], in_5x5[7], in_5x5[8], in_5x5[9]);
-//	LOGE("%d,%d,%d,%d,%d", in_5x5[10], in_5x5[11], in_5x5[12], in_5x5[13], in_5x5[14]);
-//	LOGE("%d,%d,%d,%d,%d", in_5x5[15], in_5x5[16], in_5x5[17], in_5x5[18], in_5x5[19]);
-//	LOGE("%d,%d,%d,%d,%d", in_5x5[20], in_5x5[21], in_5x5[22], in_5x5[23], in_5x5[24]);
-//	LOGE("%f,%f,%f,%f,%f", temp1, temp2, temp3, temp4, temp5);
-//	LOGE("%d", (int)(temp1 + temp2 + temp3 + temp4 + temp5));
-	return (int)(temp1 + temp2 + temp3 + temp4 + temp5);
-}
+
 
 int sharpen(Word8u* y_in, Word8u* u_in, Word8u* v_in, int width, int height, Sharpen_Cfg* param_in, module_cp* cp)
 {
@@ -183,27 +159,107 @@ return output;
 
 int sharpen2(Word8u* y_in, Word8u* u_in, Word8u* v_in, int width, int height, Sharpen_Cfg* param_in, module_cp* cp)
 {
-
+	LOGE("Sharpen2:WIDTH = %d,HEIGHT= %d", width, height);
 	int edge = 0;
 	int post_sharpen = 0;
 
-	Word8u* packed_3x3_y = (Word8u*)calloc(3 * 3, sizeof(Word8u));
-	Word8u* cross_3x3_y = (Word8u*)calloc(5, sizeof(Word8u));
+
 	
 
-	Word8u* packed_3x3_u = (Word8u*)calloc(3 * 3, sizeof(Word8u));
-	Word8u* cross_3x3_u = (Word8u*)calloc(5, sizeof(Word8u));
-	
 
-	Word8u* packed_3x3_v = (Word8u*)calloc(3 * 3, sizeof(Word8u));
-	Word8u* cross_3x3_v = (Word8u*)calloc(5, sizeof(Word8u));
 	
 	int index;
 
-	
+	Word8u* packed_9x9_y = (Word8u*)calloc(9 * 9, sizeof(Word8u));
+	//Word8u* cross_9x9_y = (Word8u*)calloc(5, sizeof(Word8u));
+
+	Word8u* packed_7x7_y = (Word8u*)calloc(7 * 7, sizeof(Word8u));
+	//Word8u* cross_9x9_y = (Word8u*)calloc(5, sizeof(Word8u));
+
+	Word8u* packed_5x5_y = (Word8u*)calloc(5 * 5, sizeof(Word8u));
+	//Word8u* cross_3x3_y = (Word8u*)calloc(5, sizeof(Word8u));
+
+	Word8u* packed_3x3_y = (Word8u*)calloc(3 * 3, sizeof(Word8u));
+	Word8u* cross_3x3_y = (Word8u*)calloc(5, sizeof(Word8u));
+
+	for (int i = 0; i < width; i++)
+	{
+		for (int j = 0; j < height; j++)
+		{
+			index = j * width + i;
+			//if ((j==(height-1))      &&        (i==0||(i==(width-1))))
+			//{
+			//printf("\n====================index =%d===============\n", index);
+			packed_9x9_data_8u(y_in, width, height, index, packed_9x9_y);
+			packed_7x7_data_8u(y_in, width, height, index, packed_7x7_y);
+			packed_5x5_data_8u(y_in, width, height, index, packed_5x5_y);
+			packed_3x3_data_8u(y_in, width, height, index, packed_3x3_y);
+			//printf("==============================================\n");
+			//}
+			//=========================
+			//    |1|
+			//  |2|0|3|
+			//	  |4|
+			//====================
+			cross_3x3_y[0] = packed_7x7_y[24];
+			cross_3x3_y[1] = packed_7x7_y[17];
+			cross_3x3_y[2] = packed_7x7_y[23];
+			cross_3x3_y[3] = packed_7x7_y[25];
+			cross_3x3_y[4] = packed_7x7_y[31];
+
+			int median_central;
+			median_central=median_filter(cross_3x3_y, 5);
+			int median_weight;
+			int central_tmp;
+			central_tmp = median_weight * median_central + (16 - median_weight) * cross_3x3_y[0];
+			central_tmp /= 16;
+			central_tmp = central_tmp > 255 ? 255 : central_tmp;
+			packed_3x3_y[24] = central_tmp;
 
 
 
+			float vert_filter[9] = {
+				-1.0f,2.0f,-1.0f,
+				-2.0f,4.0f,-2.0f,
+				-1.0f,2.0f,-1.0f };
+			float hori_filter[9] = {
+				-1.0f,-2.0f,-1.0f,
+				2.0f,4.0f,2.0f,
+				-1.0f,-2.0f,-1.0f };
+
+			float se_filter[25] = {
+				 1.0f,-1.0f,-1.0f, 0.0f, 0.0f,
+				-1.0f, 4.0f,-1.0f,-2.0f, 0.0f,
+				-1.0f,-1.0f, 6.0f,-1.0f,-1.0f,
+				 0.0f,-2.0f,-1.0f, 4.0f,-1.0f,
+				 0.0f, 0.0f,-1.0f,-1.0f, 1.0f
+			};
+			float ne_filter[25] = {
+				 0.0f, 0.0f,-1.0f,-1.0f, 1.0f,
+				 0.0f,-2.0f,-1.0f, 4.0f,-1.0f,
+				-1.0f,-1.0f, 6.0f,-1.0f,-1.0f,
+				-1.0f, 4.0f,-1.0f,-2.0f, 0.0f,
+				 1.0f,-1.0f,-1.0f, 0.0f, 0.0f
+			};
+			float symmetric_filter[49] = { 
+				0.0f,-1.0f,-1.0f,-1.0f,-1.0f,-1.0f, 0.0f,
+			   -1.0f,-1.0f,-2.0f,-2.0f,-2.0f,-1.0f,-1.0f,
+			   -1.0f,-2.0f,-2.0f,-2.0f,-2.0f,-2.0f,-1.0f,
+			   -1.0f,-2.0f,-2.0f,64.0f,-2.0f,-2.0f,-1.0f,
+			   -1.0f,-2.0f,-2.0f,-2.0f,-2.0f,-2.0f,-1.0f,
+			   -1.0f,-1.0f,-2.0f,-2.0f,-2.0f,-1.0f,-1.0f,
+				0.0f,-1.0f,-1.0f,-1.0f,-1.0f,-1.0f, 0.0f,
+			};
+
+			float sharpen_value_hori = plot3x3(packed_3x3_y, hori_filter);
+			float sharpen_value_vert = plot3x3(packed_3x3_y, vert_filter);
+
+			float sharpen_value_hori_se = plot5x5(packed_5x5_y, se_filter);
+			float sharpen_value_vert_ne = plot5x5(packed_5x5_y, ne_filter);
+
+			float sharpen_value_symm = plot7x7(packed_3x3_y, vert_filter);
+	}
+		/*
 	for (int i = 0; i < width; i++)
 	{
 		for (int j = 0; j < height; j++)
@@ -257,6 +313,6 @@ int sharpen2(Word8u* y_in, Word8u* u_in, Word8u* v_in, int width, int height, Sh
 			//y_in[index] = post_sharpen > 255 ? 255 : post_sharpen;
 		}
 	}
-
+	*/
 	return 0;
 }                                                                                                                                                                                                                                                                                                                                                                                                                                                                         

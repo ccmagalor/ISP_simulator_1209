@@ -273,7 +273,7 @@ void copy_1border(Word16u* in_data, int width, int height, int size, Word16u* ou
 }
 
 
-void packed_3x3_data(Word8u* in_data, int width, int height, int index, Word8u* out_data)
+void packed_3x3_data_8u(Word8u* in_data, int width, int height, int index, Word8u* out_data)
 {
 
 
@@ -794,6 +794,318 @@ void packed_7x7_data(Word16u* in_data, int width, int height, int index, Word16u
 }
 
 
+void packed_7x7_data_8u(Word8u* in_data, int width, int height, int index, Word8u* out_data)
+{
+	///LOGE("DEMOSAIC:WIDTH = %d,HEIGHT= %d,BAYER_PATTERN=%d", width, height, bayer_pattern);
+	int i, j;
+	//int data[3][3];
+	int col, row;
+	col = index % width;
+	row = index / width;
+
+
+	int idx[49];
+
+
+
+	int h0_offset, h1_offset, h2_offset;
+	int l0_offset, l1_offset, l2_offset;
+	int r4_offset, r5_offset, r6_offset;
+	int b4_offset, b5_offset, b6_offset;
+
+
+	idx[24] = index;
+	h0_offset = 0 - (3 * width);
+	h1_offset = 0 - (2 * width);
+	h2_offset = 0 - width;
+	b4_offset = width;
+	b5_offset = 2 * width;
+	b6_offset = 3 * width;
+
+
+	l0_offset = -3;
+	l1_offset = -2;
+	l2_offset = -1;
+	r4_offset = 1;
+	r5_offset = 2;
+	r6_offset = 3;
+
+
+
+	if (row == 0)
+	{
+		h0_offset = h1_offset = h2_offset = 0;
+	}
+	else if (row == 1)
+	{
+		h0_offset = h1_offset = h2_offset;
+	}
+	else if (row == 2)
+	{
+		h0_offset = h1_offset;;
+	}
+	else if (row == (height - 3))
+	{
+		b6_offset = b5_offset;
+	}
+	else if (row == (height - 2))
+	{
+		b6_offset = b5_offset = b4_offset;
+	}
+	else if (row == (height - 1))
+	{
+		b6_offset = b5_offset = b4_offset = 0;
+	}
+
+	if (col == 0)
+	{
+		l0_offset = l1_offset = l2_offset = 0;
+	}
+	else if (col == 1)
+	{
+		l0_offset = l1_offset = l2_offset;
+	}
+	else if (col == 2)
+	{
+		l0_offset = l1_offset;
+	}
+	else if (col == (width - 3))
+	{
+		r6_offset = r5_offset;
+
+	}
+	else if (col == (width - 2))
+	{
+		r6_offset = r5_offset = r4_offset;
+
+	}
+	else if (col == (width - 1))
+	{
+		r6_offset = r5_offset = r4_offset = 0;
+	}
+
+	idx[0] = idx[24] + h0_offset + l0_offset;
+	idx[1] = idx[24] + h0_offset + l1_offset;
+	idx[2] = idx[24] + h0_offset + l2_offset;
+	idx[3] = idx[24] + h0_offset;
+	idx[4] = idx[24] + h0_offset + r4_offset;
+	idx[5] = idx[24] + h0_offset + r5_offset;
+	idx[6] = idx[24] + h0_offset + r6_offset;
+
+	idx[7] = idx[24] + h1_offset + l0_offset;
+	idx[8] = idx[24] + h1_offset + l1_offset;
+	idx[9] = idx[24] + h1_offset + l2_offset;
+	idx[10] = idx[24] + h1_offset;
+	idx[11] = idx[24] + h1_offset + r4_offset;
+	idx[12] = idx[24] + h1_offset + r5_offset;
+	idx[13] = idx[24] + h1_offset + r6_offset;
+
+	idx[14] = idx[24] + h2_offset + l0_offset;
+	idx[15] = idx[24] + h2_offset + l1_offset;
+	idx[16] = idx[24] + h2_offset + l2_offset;
+	idx[17] = idx[24] + h2_offset;
+	idx[18] = idx[24] + h2_offset + r4_offset;
+	idx[19] = idx[24] + h2_offset + r5_offset;
+	idx[20] = idx[24] + h2_offset + r6_offset;
+
+	idx[21] = idx[24] + l0_offset;
+	idx[22] = idx[24] + l1_offset;
+	idx[23] = idx[24] + l2_offset;
+	idx[24] = idx[24];
+	idx[25] = idx[24] + r4_offset;
+	idx[26] = idx[24] + r5_offset;
+	idx[27] = idx[24] + r6_offset;
+
+	idx[28] = idx[24] + b4_offset + l0_offset;
+	idx[29] = idx[24] + b4_offset + l1_offset;
+	idx[30] = idx[24] + b4_offset + l2_offset;
+	idx[31] = idx[24] + b4_offset;
+	idx[32] = idx[24] + b4_offset + r4_offset;
+	idx[33] = idx[24] + b4_offset + r5_offset;
+	idx[34] = idx[24] + b4_offset + r6_offset;
+
+	idx[35] = idx[24] + b5_offset + l0_offset;
+	idx[36] = idx[24] + b5_offset + l1_offset;
+	idx[37] = idx[24] + b5_offset + l2_offset;
+	idx[38] = idx[24] + b5_offset;
+	idx[39] = idx[24] + b5_offset + r4_offset;
+	idx[40] = idx[24] + b5_offset + r5_offset;
+	idx[41] = idx[24] + b5_offset + r6_offset;
+
+	idx[42] = idx[24] + b6_offset + l0_offset;
+	idx[43] = idx[24] + b6_offset + l1_offset;
+	idx[44] = idx[24] + b6_offset + l2_offset;
+	idx[45] = idx[24] + b6_offset;
+	idx[46] = idx[24] + b6_offset + r4_offset;
+	idx[47] = idx[24] + b6_offset + r5_offset;
+	idx[48] = idx[24] + b6_offset + r6_offset;
+
+	for (int i = 0; i < 49; i++)
+	{
+		out_data[i] = in_data[idx[i]];
+	}
+
+
+
+	/*
+		if (row==3494&&col==4655)
+		{
+			for (int m = 0; m < 49; m++)
+			{
+				printf("%d\t", idx[m]);
+				if ((m + 1) % 7 == 0)
+				{
+					printf("\n");
+				}
+			}
+		}
+	*/
+}
+
+void packed_9x9_data(Word16u* in_data, int width, int height, int index, Word16u* out_data)
+{
+	///LOGE("DEMOSAIC:WIDTH = %d,HEIGHT= %d,BAYER_PATTERN=%d", width, height, bayer_pattern);
+	int i, j;
+	//int data[3][3];
+	int col, row;
+	col = index % width;
+	row = index / width;
+
+
+	int idx[81];
+
+	int h_offset[9], v_offset[9];
+
+
+
+
+	idx[40] = index;
+
+	for (int i = 0; i < 9; i++)
+	{
+		v_offset[i] = (i - 4) * width;
+		
+		h_offset[i] = i - 4;
+
+		if (row < 4 && i < (4 - row))
+		{
+				v_offset[i] = v_offset[4 - row];
+		}
+
+		if (row > height - 5 && i >8-(height-1-row) )
+		{
+			v_offset[i] = 8 - (row - (height - 5));
+		}
+		if (col < 4 && i < (4 - col))
+		{
+		
+				h_offset[i] = h_offset[4 - col];
+		}
+
+		if (col > width - 5 && i > 8 - (width - 1 - col))
+		{
+			h_offset[i] = 8 - (col - (width - 5));
+		}
+	}
+
+	for (int i = 0; i < 81; i++)
+	{
+
+		idx[i] = idx[40] + v_offset[i / 9] + h_offset[i % 9];
+		
+	}
+
+
+	for (int i = 0; i < 49; i++)
+	{
+		out_data[i] = in_data[idx[i]];
+	}
+
+
+}
+
+
+void packed_9x9_data_8u(Word8u* in_data, int width, int height, int index, Word8u* out_data)
+{
+	///LOGE("DEMOSAIC:WIDTH = %d,HEIGHT= %d,BAYER_PATTERN=%d", width, height, bayer_pattern);
+	int i, j;
+	//int data[3][3];
+	int col, row;
+	col = index % width;
+	row = index / width;
+
+	//printf("row  = %d, col = %d\n",row,col);
+
+	int idx[81];
+
+	int h_offset[9], v_offset[9];
+
+
+
+
+	idx[40] = index;
+
+	for (int i = 0; i < 9; i++)
+	{
+		v_offset[i] = (i - 4) * width;
+
+		h_offset[i] = i - 4;
+
+
+	}
+
+	for (int i = 0; i < 9; i++)
+	{
+		if (row < 4 && i < (4 - row))
+		{
+			v_offset[i] = v_offset[4 - row];
+		}
+
+		if (row > height - 5 && i > 8 - (row+5 - height))
+		{
+			v_offset[i] = v_offset[8 - (row + 5 - height)];
+		}
+		if (col < 4 && i < (4 - col))
+		{
+
+			h_offset[i] = h_offset[4 - col];
+		}
+
+		if (col > width - 5 && i > 8 - (col+5-width))
+		{
+			h_offset[i] = h_offset[8 - (col + 5 - width)];
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+	for (int i = 0; i < 81; i++)
+	{
+
+		idx[i] = idx[40] + v_offset[i / 9] + h_offset[i % 9];
+
+	}
+
+
+	for (int i = 0; i < 81; i++)
+	{
+	out_data[i] = in_data[idx[i]];
+	//	printf("%d\t", out_data[i]);
+	//	if ((i+1) % 9 == 0)
+	//	{
+	//		printf("\n");
+	//	}
+	}
+
+
+}
 
 
 /*
@@ -1174,6 +1486,123 @@ int dct_filter(Word8u* input , Word8u* output,int size, int order, float* filter
 	return 0;
 }
 
+Word16u min4(Word16u data1, Word16u data2, Word16u data3, Word16u data4)
+{
+	Word16u data_tmp=9999;
+
+	if (data_tmp > data1)
+		data_tmp = data1;
+	else if (data_tmp > data2)
+		data_tmp = data2;
+	else if (data_tmp > data3)
+		data_tmp = data3;
+	else if (data_tmp > data4)
+		data_tmp = data4;
+	
+	return data_tmp;
+}
+
+Word16u max4(Word16u data1, Word16u data2, Word16u data3, Word16u data4)
+{
+	Word16u data_tmp = 0;
+
+	if (data_tmp < data1)
+		data_tmp = data1;
+	else if (data_tmp < data2)
+		data_tmp = data2;
+	else if (data_tmp < data3)
+		data_tmp = data3;
+	else if (data_tmp < data4)
+		data_tmp = data4;
+
+	return data_tmp;
+}
+
+Word16u min3(Word16u data1, Word16u data2, Word16u data3)
+{
+	Word16u data_tmp = 9999;
+
+	if (data_tmp > data1)
+		data_tmp = data1;
+	else if (data_tmp > data2)
+		data_tmp = data2;
+	else if (data_tmp > data3)
+		data_tmp = data3;
 
 
+	return data_tmp;
+}
+
+Word16u max3(Word16u data1, Word16u data2, Word16u data3)
+{
+	Word16u data_tmp = 0;
+
+	if (data_tmp < data1)
+		data_tmp = data1;
+	else if (data_tmp < data2)
+		data_tmp = data2;
+	else if (data_tmp < data3)
+		data_tmp = data3;
+
+
+	return data_tmp;
+}
+
+void mirror_vector_lr(float* in_data, float* outdata,int vector_size_h,int vector_size_v)
+{
+	for (int i = 0; i < vector_size_v; i++)
+	{
+		for (int j = 0; j < vector_size_h; j++)
+		{
+			outdata[i * vector_size_h + j] = in_data[i * vector_size_h + vector_size_h - 1 - j];
+
+		}
+		
+	}
+
+}
+
+void mirror_vector_tb(float* in_data, float* outdata, int vector_size_h, int vector_size_v)
+{
+	for (int i = 0; i < vector_size_v; i++)
+	{
+		for (int j = 0; j < vector_size_h; j++)
+		{
+			outdata[i * vector_size_h + j] = in_data[(vector_size_v - 1-i) * vector_size_h +   j];
+
+		}
+
+	}
+
+}
+
+int plot3x3(Word8u* in_3x3, float* coeff_3x3)
+{
+	float temp1, temp2, temp3;
+	temp1 = in_3x3[0] * coeff_3x3[0] + in_3x3[1] * coeff_3x3[1] + in_3x3[2] * coeff_3x3[2];
+	temp2 = in_3x3[3] * coeff_3x3[3] + in_3x3[4] * coeff_3x3[4] + in_3x3[5] * coeff_3x3[5];
+	temp3 = in_3x3[6] * coeff_3x3[6] + in_3x3[7] * coeff_3x3[7] + in_3x3[8] * coeff_3x3[8];
+	return (int)(temp1 + temp2 + temp3);
+}
+
+
+
+int plot5x5(Word8u* in_5x5, float* coeff_5x5)
+{
+	float temp1, temp2, temp3, temp4, temp5;
+	temp1 = in_5x5[0] * coeff_5x5[0] + in_5x5[1] * coeff_5x5[1] + in_5x5[2] * coeff_5x5[2] + in_5x5[3] * coeff_5x5[3] + in_5x5[4] * coeff_5x5[4];
+	temp2 = in_5x5[5] * coeff_5x5[5] + in_5x5[6] * coeff_5x5[6] + in_5x5[7] * coeff_5x5[7] + in_5x5[8] * coeff_5x5[8] + in_5x5[9] * coeff_5x5[9];
+	temp3 = in_5x5[10] * coeff_5x5[10] + in_5x5[11] * coeff_5x5[11] + in_5x5[12] * coeff_5x5[12] + in_5x5[13] * coeff_5x5[13] + in_5x5[14] * coeff_5x5[14];
+	temp4 = in_5x5[15] * coeff_5x5[15] + in_5x5[16] * coeff_5x5[16] + in_5x5[17] * coeff_5x5[17] + in_5x5[18] * coeff_5x5[18] + in_5x5[19] * coeff_5x5[19];
+	temp5 = in_5x5[20] * coeff_5x5[20] + in_5x5[21] * coeff_5x5[21] + in_5x5[22] * coeff_5x5[22] + in_5x5[23] * coeff_5x5[23] + in_5x5[24] * coeff_5x5[24];
+
+	//	LOGE("%d,%d,%d,%d,%d", in_5x5[0] , in_5x5[1] , in_5x5[2] , in_5x5[3] , in_5x5[4]);
+	//	LOGE("%d,%d,%d,%d,%d", in_5x5[5], in_5x5[6], in_5x5[7], in_5x5[8], in_5x5[9]);
+	//	LOGE("%d,%d,%d,%d,%d", in_5x5[10], in_5x5[11], in_5x5[12], in_5x5[13], in_5x5[14]);
+	//	LOGE("%d,%d,%d,%d,%d", in_5x5[15], in_5x5[16], in_5x5[17], in_5x5[18], in_5x5[19]);
+	//	LOGE("%d,%d,%d,%d,%d", in_5x5[20], in_5x5[21], in_5x5[22], in_5x5[23], in_5x5[24]);
+	//	LOGE("%f,%f,%f,%f,%f", temp1, temp2, temp3, temp4, temp5);
+	//	LOGE("%d", (int)(temp1 + temp2 + temp3 + temp4 + temp5));
+	return (int)(temp1 + temp2 + temp3 + temp4 + temp5);
+}
 

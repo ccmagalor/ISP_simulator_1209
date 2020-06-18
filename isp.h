@@ -71,3 +71,5 @@ typedef struct {
 #define ABS(x) (x)<0?(-x):(x)
 
 #define PI 3.1416f
+
+#define MIN4(a,b,c,d) a<b?(a<c)?(a<d)?a:
