@@ -290,37 +290,37 @@ void packed_3x3_data_8u(Word8u* in_data, int width, int height, int index, Word8
 
 	idx4 = index;
 
+	h_offset = -width;
+	b_offset = width;
+
+
+
+	l_offset = -1;
+	r_offset = 1;
+
 	if (row == 0)
 	{
 		h_offset = 0;
-		b_offset = width;
+		
 	}
 	else if (row == (height - 1))
 	{
-		h_offset = -width;
+	
 		b_offset = 0;
 	}
-	else
-	{
-		h_offset = -width;
-		b_offset = width;
-	}
+
 
 	if (col == 0)
 	{
 		l_offset = 0;
-		r_offset = 1;
+
 	}
 	else if (col = (width - 1))
 	{
-		l_offset = -1;
+	
 		r_offset = 0;
 	}
-	else
-	{
-		l_offset = -1;
-		r_offset = 1;
-	}
+
 
 
 
@@ -329,7 +329,7 @@ void packed_3x3_data_8u(Word8u* in_data, int width, int height, int index, Word8
 	idx2 = idx4 + h_offset + r_offset;
 	idx3 = idx4 + l_offset;
 	idx5 = idx4 + r_offset;
-	idx6 = idx4 - l_offset + b_offset;
+	idx6 = idx4 + l_offset + b_offset;
 	idx7 = idx4 + b_offset;
 	idx8 = idx4 + r_offset + b_offset;
 
@@ -343,6 +343,19 @@ void packed_3x3_data_8u(Word8u* in_data, int width, int height, int index, Word8
 	out_data[7] = in_data[idx7];
 	out_data[8] = in_data[idx8];
 
+	for (int i = 0; i < 9; i++)
+	{
+
+
+		//printf("%d\t", out_data[i]);
+		if ((i + 1) % 3 == 0)
+		{
+		//	printf("\n");
+		}
+
+	}
+
+	//printf("\n");
 
 }
 
@@ -622,6 +635,22 @@ void packed_5x5_data_8u(Word8u* in_data, int width, int height, int index, Word8
 		//	LOGE("%2d %2d %2d %2d %2d", in_data[idx15], in_data[idx16], in_data[idx17], in_data[idx18], in_data[idx19]);
 		//	LOGE("%2d %2d %2d %2d %2d", in_data[idx20], in_data[idx21], in_data[idx22], in_data[idx23], in_data[idx24]);
 		//}
+
+	for (int i = 0; i < 25; i++)
+	{
+
+
+	//	printf("%d\t", out_data[i]);
+		if ((i + 1) % 5 == 0)
+		{
+		//	printf("\n");
+		}
+		
+	}
+	//printf("\n");
+
+
+
 }
 
 
@@ -943,9 +972,16 @@ void packed_7x7_data_8u(Word8u* in_data, int width, int height, int index, Word8
 	for (int i = 0; i < 49; i++)
 	{
 		out_data[i] = in_data[idx[i]];
+
+		//printf("%d\t", out_data[i]);
+		if ((i + 1) % 7 == 0)
+		{
+		//	printf("\n");
+		}
+		
 	}
 
-
+	//printf("\n");
 
 	/*
 		if (row==3494&&col==4655)
@@ -1097,13 +1133,13 @@ void packed_9x9_data_8u(Word8u* in_data, int width, int height, int index, Word8
 	for (int i = 0; i < 81; i++)
 	{
 	out_data[i] = in_data[idx[i]];
-	//	printf("%d\t", out_data[i]);
-	//	if ((i+1) % 9 == 0)
-	//	{
-	//		printf("\n");
-	//	}
+		//printf("%d\t", out_data[i]);
+		if ((i+1) % 9 == 0)
+		{
+		//	printf("\n");
+		}
 	}
-
+	//printf("\n");
 
 }
 
@@ -1365,10 +1401,10 @@ void packed_HxV_data(Word16u* in_data, Word16u* index_offset_h, Word16u* index_o
 
 
 
-int gen_Guass_filter(int size,float* filter)
+int gen_Guass_filter(int size,float* filter,float delta)
 {
 	int i, j,k,index;
-	float e = 1.5f;
+	float e = delta;
 	float sum = 0.0f;
 	for (i = 0; i < size ; i++)
 	{
@@ -1378,19 +1414,36 @@ int gen_Guass_filter(int size,float* filter)
 			int delta = (j - size / 2) * (j - size / 2) + (i - size / 2) * (i - size / 2);
 			filter[index] = 0.5f / e / e;
 			filter[index]  = filter[index] / exp(delta / (2 * (e * e)));
-			LOGE("Gauss filter[%d] = %f",index, filter[index]);
+		//	LOGE("Gauss filter[%d] = %f",index, filter[index]);
 			sum += filter[index];
 		}
 
 	}
-	LOGE("BEFORE NORMALIZE sum = %f",sum);
+	//LOGE("BEFORE NORMALIZE sum = %f",sum);
 	for (k = 0; k < size*size; k++)
 	{
 
 			filter[k] /= sum;
-			LOGE("Gauss filter[%d] = %f", k, filter[k]);
+			//LOGE("Gauss filter[%d] = %f", k, filter[k]);
 		
 	}
+
+
+		for (int m = 0; m < 49; m++)
+		{
+			printf("%f\t", filter[m]);
+			if ((m + 1) % 7 == 0)
+			{
+				printf("\n");
+			}
+		}
+
+
+
+
+
+
+
 	return *filter;
 
 }
@@ -1606,3 +1659,29 @@ int plot5x5(Word8u* in_5x5, float* coeff_5x5)
 	return (int)(temp1 + temp2 + temp3 + temp4 + temp5);
 }
 
+int plot7x7(Word8u* in_7x7, float* coeff_7x7)
+{
+	float data_temp=0;
+	for (int i = 0; i < 49; i++)
+	{
+		data_temp += in_7x7[i] * coeff_7x7[i];
+
+	}
+	return (int)(data_temp);
+
+
+}
+
+
+int plot9x9(Word8u* in_9x9, float* coeff_9x9)
+{
+	float data_temp = 0;
+	for (int i = 0; i < 81; i++)
+	{
+		data_temp += in_9x9[i] * coeff_9x9[i];
+
+	}
+	return (int)(data_temp);
+
+
+}

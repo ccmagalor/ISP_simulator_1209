@@ -12,7 +12,7 @@ int nr(Word8u* y_in, Word8u* u_in, Word8u* v_in, int width, int height, Nr_Cfg* 
 	float* Guass_filter = (float*)calloc(Fsize * Fsize, sizeof(float));
 
 
-	gen_Guass_filter(Fsize, Guass_filter);
+	gen_Guass_filter(Fsize, Guass_filter,1.5f);
 
 
 	int Fsize1 = 5;

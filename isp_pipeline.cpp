@@ -434,7 +434,7 @@ int main(int argc, char* argv[])
 		//nr(pYBuffer, pUBuffer, pVBuffer, ImWidth, ImHeight, &nr_param_in, &cp);
 		//nr(pYBuffer, pUBuffer, pVBuffer, ImWidth, ImHeight, &nr_param_in, &cp);
 		//sharpen1(pYBuffer, pUBuffer, pVBuffer, ImWidth, ImHeight, &Sharpen_param_in, &cp);
-		sharpen2(pYBuffer, pUBuffer, pVBuffer, ImWidth, ImHeight, &Sharpen_param_in, &cp);
+		//sharpen2(pYBuffer, pUBuffer, pVBuffer, ImWidth, ImHeight, &Sharpen_param_in, &cp);
 		//Equal(pYBuffer, pUBuffer, pVBuffer, ImWidth, ImHeight, &Equal_param_in, &cp);
 
 		char yuv_path[300];

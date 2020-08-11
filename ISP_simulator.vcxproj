@@ -126,6 +126,7 @@
   <ItemGroup>
     <ClCompile Include="awb.cpp" />
     <ClCompile Include="blc.cpp" />
+    <ClCompile Include="cac.cpp" />
     <ClCompile Include="cc.cpp" />
     <ClCompile Include="cst.cpp" />
     <ClCompile Include="demosaic.cpp" />
@@ -143,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="awb.h" />
     <ClInclude Include="blc.h" />
+    <ClInclude Include="cac.h" />
     <ClInclude Include="cc.h" />
     <ClInclude Include="cst.h" />
     <ClInclude Include="demosaic.h" />

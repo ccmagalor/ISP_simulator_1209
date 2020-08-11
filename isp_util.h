@@ -23,7 +23,7 @@ void packed_7x7_data(Word16u* in_data, int width, int height, int index, Word16u
 void packed_7x7_data_8u(Word8u* in_data, int width, int height, int index, Word8u* out_data);
 void packed_9x9_data(Word16u* in_data, int width, int height, int index, Word16u* out_data);
 void packed_9x9_data_8u(Word8u* in_data, int width, int height, int index, Word8u* out_data);
-int gen_Guass_filter(int size, float* filter);
+int gen_Guass_filter(int size, float* filter,float delta);
 int gen_Graydiff_filter(int size, Word8u* in_data, float* filter);
 
 void mirror_vector_lr(float* in_data, float* outdata, int vector_size, int vector_size_v);

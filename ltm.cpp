@@ -210,7 +210,7 @@ int ltm1(Word8u* r_in, Word8u* g_in, Word8u* b_in, int width, int height, Ltm_Cf
 	float ratio = 0.0f;
 	for (int i = 0; i < width * height; i++)
 	{
-		packed_3x3_data(Lw, width, height, i, packed_3x3_y);
+		packed_3x3_data_8u(Lw, width, height, i, packed_3x3_y);
 		y_temp1 = packed_3x3_y[0] + packed_3x3_y[1] + packed_3x3_y[2];
 		y_temp2 = packed_3x3_y[3] + packed_3x3_y[4] + packed_3x3_y[5];
 		y_temp3 = packed_3x3_y[6] + packed_3x3_y[7] + packed_3x3_y[8];

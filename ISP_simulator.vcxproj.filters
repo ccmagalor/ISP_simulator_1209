@@ -60,6 +60,9 @@
     <ClCompile Include="wb.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="cac.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="isp_util.h">
@@ -105,6 +108,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="wb.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="cac.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
